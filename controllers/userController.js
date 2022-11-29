@@ -1,12 +1,16 @@
 const User = require('../models/User')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const { validateRegister, validateLogin } = require('./validate')
 
 const salt = bcrypt.genSaltSync(14)
 
 const userControllers = {
 
     register: async function(req, res) {
+
+        const { error } = validateRegister(req.body)
+        if(error){ return res.status(400).send(error)}
 
         const selectUser = await User.findOne({email: req.body.email})
 
@@ -29,6 +33,10 @@ const userControllers = {
     },
 
     login: async function(req, res){
+
+        const { error } = validateLogin(req.body)
+        if(error) { return res.status(400).send(error)}
+
         const selectUser = await User.findOne({email: req.body.email})
 
         if(selectUser){
