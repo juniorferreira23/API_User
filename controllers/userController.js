@@ -1,4 +1,4 @@
-const User = require('../models/User')
+const UserModel = require('../models/User')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const { validateRegister, validateLogin } = require('./validate')
@@ -12,12 +12,12 @@ const userControllers = {
         const { error } = validateRegister(req.body)
         if(error){ return res.status(400).send(error)}
 
-        const selectUser = await User.findOne({email: req.body.email})
+        const selectUser = await UserModel.findOne({email: req.body.email})
 
         if(selectUser){
             res.status(400).send('E-mail já existe')
         }else{ 
-            const user = new User ({
+            const user = new UserModel ({
                 name: req.body.name,
                 email: req.body.email,
                 password: bcrypt.hashSync(req.body.password, salt)
@@ -37,7 +37,7 @@ const userControllers = {
         const { error } = validateLogin(req.body)
         if(error) { return res.status(400).send(error)}
 
-        const selectUser = await User.findOne({email: req.body.email})
+        const selectUser = await UserModel.findOne({email: req.body.email})
 
         if(selectUser){
             const passwordAndUserMatch = bcrypt.compareSync(req.body.password, selectUser.password)
