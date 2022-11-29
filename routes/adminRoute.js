@@ -2,8 +2,12 @@ const express = require('express')
 const router = express.Router()
 const { authenticationToken } = require('../controllers/authoController')
 
-router.get('/', authenticationToken, (req, res) => {
-    res.send('acesso de admin')
+router.post('/', authenticationToken, (req, res) => {
+    if(req.user.admin){
+        res.send('acesso de admin')
+    }else{
+        res.status(400).send('Acesso negado')
+    }
 })
 
 module.exports = router
